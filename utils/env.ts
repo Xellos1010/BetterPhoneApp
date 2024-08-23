@@ -1,0 +1,1 @@
+export const ENV = process.env.NODE_ENV; // assuming the variable is set as 'NODE_ENV'

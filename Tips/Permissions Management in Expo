@@ -1,0 +1,44 @@
+In an Expo project, you utilize the expo-permissions module along with app.json or app.config.js to manage permissions rather than modifying the AndroidManifest.xml or Info.plist files directly. This allows you to set permissions that the Expo build system can incorporate automatically when you build your app, minimizing manual updates for every pre-build.
+Steps to Manage Permissions in Expo
+Install Required Library: If you haven't already, install the necessary permissions library:
+expo install expo-permissions
+Update your Configuration: In your app.json or app.config.js, you can define permissions under the android and ios keys.
+Here’s an example of what your app.json might look like:
+{
+  "expo": {
+    "name": "YourAppName",
+    "slug": "your-app-slug",
+    "version": "1.0.0",
+    "sdkVersion": "48.0.0",
+    "platforms": ["ios", "android", "web"],
+    "permissions": [
+      "READ_CONTACTS"  // Add any other required permissions here
+    ],
+    "android": {
+      "permissions": [
+        "READ_CONTACTS", 
+        "WRITE_CONTACTS" // Include any other necessary Android permissions
+      ]
+    },
+    "ios": {
+      "infoPlist": {
+        "NSContactsUsageDescription": "This app needs access to your contacts to function properly.",
+        "NSPhotoLibraryUsageDescription": "This app requires access to your photo library."
+      }
+    }
+  }
+}
+Request Permissions at Runtime: When your app starts, ensure you check if permissions are granted and request them if necessary. Utilize the expo-permissions library to handle this:
+import * as Permissions from 'expo-permissions';
+
+const requestContactsPermission = async (): Promise<boolean> => {
+    const { status } = await Permissions.askAsync(Permissions.CONTACTS);
+    return status === 'granted';
+};
+Run Your Expo Build: When you build your app with Expo (expo build:android for standalone apps), it will automatically incorporate the permissions you listed in app.json.
+Benefits
+Automation: You do not need to modify the AndroidManifest.xml and Info.plist files manually each time; the Expo build process takes care of it.
+Simpler Management: You can centrally manage permissions in your configuration file, making it easier to update.
+Keep in Mind
+If you decide to eject your Expo project to a bare workflow at some point, or if you build the project with "prebuild" command, you may need to bring back modifications to AndroidManifest.xml and Info.plist to manage permissions directly as stated earlier.
+If you have any further questions about managing permissions in Expo or React Native in general, feel free to ask!
